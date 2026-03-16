@@ -31,9 +31,9 @@ float final_ultrasonic_reading = 0;
 
 
 
-const float target_distance = 12.415;
+const float target_distance = 13.5;
 
-const float kp = 1.2;  
+const float kp = 1.1;  
 
 const float ki = 0.5;
 
@@ -44,6 +44,13 @@ float integral = 0;
 float lastError = 0;
 
 float lastTime = 0;
+
+
+
+
+
+
+
 
 
 ISR(TIMER0_COMPA_vect) {
@@ -197,19 +204,17 @@ float calculatePID(float distance) {
     float dt_fixed = 0.04; 
     float error = target_distance - distance;
     
-    // --- NEW: THE "STOP" LOGIC ---
-    // Check if we are in your desired range (12.1 to 12.8)
-    if (distance >= 9.5 && distance <= 11.8) {
-        error = 0;       // Stop the Proportional and Derivative terms
-        integral = 0;  
-        //  dt_fixed = 0;   // WIPE the memory so the beam doesn't "creep"
+    
+    if (distance >= 10.5 && distance <= 16) {
+        error = 0;       
+       
     } else {
-        // Only accumulate integral if we are OUTSIDE the target
+        
         integral += error * dt_fixed;
     }
-    // -----------------------------
+    
 
-    // Tighten Anti-windup (prevent the value from getting too huge)
+    
     if(integral < -10) integral = -10;
     if(integral > 10)  integral = 10;
     
